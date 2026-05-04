@@ -7,12 +7,35 @@ class Controller:
         self._view = view
         # the model, which implements the logic of the program and holds the data
         self._model = model
+        self._fermataPartenza = None
+
 
     def handleCreaGrafo(self,e):
-        pass
+        self._model.buildGraph() # crea una nuova istanza del grafo
+        self._view.lst_result.controls.clear()
+        self._view.lst_result.controls.append(ft.Text("Grafo correttamente creato"))
+        self._view.lst_result.controls.append(ft.Text(f"Il grafo è costituito da {self._model.get_numnodi()} nodi"))
+        self._view.lst_result.controls.append(ft.Text(f"Il grafo è costituito da {self._model.get_numarchi()} archi"))
+        self._view.update_page()
+
 
     def handleCercaRaggiungibili(self,e):
-        pass
+        self._view.lst_result.controls.clear()
+
+        if self._fermataPartenza is None:
+            self._view.lst_result.controls.append(ft.Text(
+                "Attenzione, non è stata fatta una scelta di stazione di partenza", color = "red"))
+            self._view.update_page()
+
+        else:
+            nodes = self._model.getBFSNodesFromEdges(self._fermataPartenza)
+            self._view.lst_result.controls.append(ft.Text(
+                f"Di seguito i nodi raggiungibili da {self._fermataPartenza}"))
+            for n in nodes:
+                self._view.lst_result.controls.append(ft.Text(f"{n}"))
+            self._view.update_page()
+
+
 
     def loadFermate(self, dd: ft.Dropdown()):
         fermate = self._model.fermate
@@ -28,12 +51,14 @@ class Controller:
                                                      data=f,
                                                      on_click=self.read_DD_Arrivo))
 
+
     def read_DD_Partenza(self,e):
         print("read_DD_Partenza called ")
         if e.control.data is None:
             self._fermataPartenza = None
         else:
             self._fermataPartenza = e.control.data
+
 
     def read_DD_Arrivo(self,e):
         print("read_DD_Arrivo called ")

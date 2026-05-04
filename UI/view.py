@@ -1,9 +1,11 @@
 import flet as ft
 import os
 
+
 class View(ft.UserControl):
     def __init__(self, page: ft.Page):
         super().__init__()
+
         # page stuff
         self._page = page
         self._page.title = "Metro Paris 2025"
@@ -12,8 +14,10 @@ class View(ft.UserControl):
         page.window_width = 1200  # window's width is 200 px
         page.window_height = 800
         page.window_center()
+
         # controller (it is not initialized. Must be initialized in the main, after the controller is created)
         self._controller = None
+
         # graphical elements
         self.lst_result = None
         self._title = None
@@ -21,6 +25,8 @@ class View(ft.UserControl):
         self._ddStazArrivo = None
         self._ddStazPartenza = None
         self._btnCrea = None
+        self._btnCalcola = None
+
 
     def load_interface(self):
         # title
@@ -42,11 +48,9 @@ class View(ft.UserControl):
         self._ddStazArrivo = ft.Dropdown(label="Stazione di Arrivo")
         self._btnCalcola = ft.ElevatedButton(text="Calcola Raggiungibili", on_click=self._controller.handleCercaRaggiungibili)
 
-
         #Load elements in DD
         self._controller.loadFermate(self._ddStazPartenza)
         self._controller.loadFermate(self._ddStazArrivo)
-
 
         row2 = ft.Row([self._btnCrea,
                        self._ddStazPartenza,
@@ -56,19 +60,23 @@ class View(ft.UserControl):
 
         # Row with listview
         self.lst_result = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False)
-
         self._page.add(row1, row2, self.lst_result)
 
         self._page.update()
 
+
     def set_controller(self, controller):
         self._controller = controller
 
+
     def update_page(self):
         self._page.update()
+
+
     @property
     def controller(self):
         return self._controller
+
 
     @controller.setter
     def controller(self, controller):
